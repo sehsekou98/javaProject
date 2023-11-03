@@ -35,8 +35,7 @@ public class CustomerService {
         // check if email exist
         String email = customerRegistrationRequest.email();
         if (customerDb.existsPersonWithEmail(email)) {
-            throw new DuplicateResourceException(
-                    " email already taken."
+            throw new DuplicateResourceException("email already taken."
             );
         }
 
