@@ -1,2 +1,8 @@
 server:
   port: 8888
+  error:
+    include-message: always
+
+    spring:
+      main:
+        web-application-type: servlet
