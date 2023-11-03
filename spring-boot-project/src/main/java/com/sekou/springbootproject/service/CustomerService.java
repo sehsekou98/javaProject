@@ -4,6 +4,7 @@ package com.sekou.springbootproject.service;
 import com.sekou.springbootproject.customers.Customer;
 import com.sekou.springbootproject.customers.CustomerDb;
 import com.sekou.springbootproject.exception.ResourceNotFound;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,11 +14,13 @@ public class CustomerService {
 
     private final CustomerDb customerDb;
 
-    public CustomerService(CustomerDb customerDb) {
+    public CustomerService(@Qualifier("jpa") CustomerDb customerDb)
+    {
         this.customerDb = customerDb;
     }
 
     public List<Customer> getAllCustomers() {
+
         return customerDb.selectAllCustomers();
     }
 

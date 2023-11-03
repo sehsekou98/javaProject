@@ -1,0 +1,31 @@
+package com.sekou.springbootproject.service;
+
+import com.sekou.springbootproject.customers.Customer;
+import com.sekou.springbootproject.customers.CustomerDb;
+import com.sekou.springbootproject.repository.CustomerRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Optional;
+
+@Repository("jpa")
+
+public class CustomerJPADataAccessService implements CustomerDb {
+
+    private final CustomerRepository customerRepository;
+
+    public CustomerJPADataAccessService(CustomerRepository customerRepository) {
+        this.customerRepository = customerRepository;
+    }
+
+    @Override
+    public List<Customer> selectAllCustomers() {
+        return customerRepository.findAll();
+    }
+
+    @Override
+    public Optional<Customer> selectCustomerById(Integer id) {
+        return customerRepository.findById(id);
+    }
+
+}
