@@ -104,4 +104,7 @@ public class Customer {
                 ", age=" + age +
                 '}';
     }
+
+    public void add(Customer customer) {
+    }
 }

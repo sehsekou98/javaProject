@@ -33,7 +33,7 @@ public class Main {
 			Customer doe = new Customer(
 
 					"Doe Blama",
-					"Doe  @gmail.com",
+					"doe@gmail.com",
 					18
 
 			);
@@ -41,6 +41,8 @@ public class Main {
 			customerRepository.saveAll(customers);
 
 		};
+
+
 	}
 
 }

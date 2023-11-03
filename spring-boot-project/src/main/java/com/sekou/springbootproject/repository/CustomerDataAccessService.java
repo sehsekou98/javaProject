@@ -82,6 +82,18 @@ public class CustomerDataAccessService implements CustomerDb {
                 .filter(c -> c.getId().equals(id))
                 .findFirst();
 
-
     }
+
+    @Override
+    public void insertCustomer(Customer customer) {
+       customer.add(customer);
+    }
+
+    @Override
+    public boolean existsPersonWithEmail(String email) {
+        return customers.stream()
+                .allMatch(c -> c.getEmail().equals(email) );
+    }
+
+
 }
