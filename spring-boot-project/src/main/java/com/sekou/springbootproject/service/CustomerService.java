@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 @Service
-
 public class CustomerService {
 
     private final CustomerDb customerDb;
@@ -35,7 +34,7 @@ public class CustomerService {
         // check if email exist
         String email = customerRegistrationRequest.email();
         if (customerDb.existsPersonWithEmail(email)) {
-            throw new DuplicateResourceException("email already taken."
+            throw new DuplicateResourceException("email already taken"
             );
         }
 
@@ -48,4 +47,16 @@ public class CustomerService {
         customerDb.insertCustomer(customer);
 
     }
+
+    public void deleteCustomerById(Integer customerId) {
+        if (!customerDb.existsPersonWithId(customerId)) {
+            throw new ResourceNotFound(
+                    "customer with id [%s] not found".formatted(customerId)
+            );
+        }
+        customerDb.deleteCustomerById(customerId);
+    }
+
+
 }
+
