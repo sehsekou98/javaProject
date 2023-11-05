@@ -50,5 +50,10 @@ public class CustomerJPADataAccessService implements CustomerDb {
    customerRepository.deleteById(customerId);
     }
 
+    @Override
+    public void updateCustomer(Customer update) {
+        customerRepository.save(update);
+    }
+
 
 }

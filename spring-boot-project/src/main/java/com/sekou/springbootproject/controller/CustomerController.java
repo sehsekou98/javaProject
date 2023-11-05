@@ -2,6 +2,7 @@ package com.sekou.springbootproject.controller;
 
 import com.sekou.springbootproject.customers.Customer;
 import com.sekou.springbootproject.customers.CustomerRegistrationRequest;
+import com.sekou.springbootproject.customers.CustomerUpdateRequest;
 import com.sekou.springbootproject.service.CustomerService;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,6 +41,13 @@ public class CustomerController {
     public  void delectCustomer(
             @PathVariable("customerId") Integer customerId) {
         customerService.deleteCustomerById(customerId);
+    }
+
+    @PutMapping("{customerId}")
+    public void delectCustomer(
+            @PathVariable("customerId") Integer customerId,
+            @RequestBody  CustomerUpdateRequest updateRequest) {
+        customerService.updateCustomer(customerId, updateRequest);
     }
 }
 

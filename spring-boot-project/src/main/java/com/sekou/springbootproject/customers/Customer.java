@@ -41,7 +41,7 @@ public class Customer {
 
     }
     public Customer(String name, String email, Integer age) {
-        this.id = id;
+
         this.name = name;
         this.email = email;
         this.age = age;
