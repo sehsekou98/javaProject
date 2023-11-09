@@ -7,10 +7,10 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/customer
     username: sehsekou98
-    password: passworl1
+    password: password1
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: none
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
