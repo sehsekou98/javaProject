@@ -14,7 +14,6 @@ import java.util.Objects;
                         columnNames = "email"
                 )
         }
-
 )
 public class Customer {
     @Id
@@ -38,7 +37,6 @@ public class Customer {
     private String email;
     @Column(
             nullable = false
-
     )
     private  Integer age;
 
