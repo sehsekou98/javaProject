@@ -19,8 +19,9 @@ import java.util.Objects;
 public class Customer {
     @Id
     @SequenceGenerator(
-            name = "customer_id_sequence",
-            sequenceName = "customer_id_seq"
+            name = "customer_id_seq",
+            sequenceName = "customer_id_seq",
+            allocationSize = 1
     )
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
@@ -36,8 +37,8 @@ public class Customer {
     )
     private String email;
     @Column(
-            nullable = false,
-            unique = true
+            nullable = false
+
     )
     private  Integer age;
 
