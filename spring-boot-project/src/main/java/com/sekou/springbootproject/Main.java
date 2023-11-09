@@ -1,5 +1,6 @@
 package com.sekou.springbootproject;
 
+import com.github.javafaker.Faker;
 import com.sekou.springbootproject.customers.Customer;
 import com.sekou.springbootproject.repository.CustomerRepository;
 import org.springframework.boot.CommandLineRunner;
@@ -8,6 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import java.util.List;
+import java.util.Random;
 
 @SpringBootApplication
 public class Main {
@@ -22,23 +24,16 @@ public class Main {
 	CommandLineRunner runner(CustomerRepository customerRepository) {
 		return args -> {
 
-			Customer mary = new Customer(
+		       var faker = new Faker();
+			Random random = new Random();
+			Customer customer   = new Customer(
 
-					"Mary John",
-					"mary@gmail.com",
-					28
-
-			);
-
-			Customer doe = new Customer(
-
-					"Doe Blama",
-					"doe@gmail.com",
-					18
+					faker.name().fullName(),
+					faker.internet().safeEmailAddress(),
+					random.nextInt(16,99)
 
 			);
-			List<Customer> customers = List.of(mary, doe);
-			customerRepository.saveAll(customers);
+			   customerRepository.save(customer );
 
 		};
 

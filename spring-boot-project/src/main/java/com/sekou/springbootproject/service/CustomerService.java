@@ -16,7 +16,7 @@ public class CustomerService {
 
     private final CustomerDb customerDb;
 
-    public CustomerService(@Qualifier("jpa") CustomerDb customerDb)
+    public CustomerService(@Qualifier("jdbc") CustomerDb customerDb)
     {
         this.customerDb = customerDb;
     }
