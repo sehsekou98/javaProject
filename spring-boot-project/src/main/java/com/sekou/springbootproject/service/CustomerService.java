@@ -6,6 +6,7 @@ import com.sekou.springbootproject.customers.CustomerDb;
 import com.sekou.springbootproject.customers.CustomerRegistrationRequest;
 import com.sekou.springbootproject.customers.CustomerUpdateRequest;
 import com.sekou.springbootproject.exception.DuplicateResourceException;
+import com.sekou.springbootproject.exception.RequestValidationException;
 import com.sekou.springbootproject.exception.ResourceNotFound;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -65,21 +66,27 @@ public class CustomerService {
 
         if (updateRequest.name() != null && !updateRequest.name().equals(customer.getName())) {
           customer.setName(updateRequest.name());
-          customerDb.insertCustomer(customer);
           changes = true;
-        }
-
-        if (updateRequest.email() != null && !updateRequest.email().equals(customer.getEmail())) {
-            customer.setEmail(updateRequest.email());
-            customerDb.insertCustomer(customer);
-            changes = true;
         }
 
         if (updateRequest.age() != null && !updateRequest.age().equals(customer.getAge())) {
             customer.setAge(updateRequest.age());
-            customerDb.insertCustomer(customer);
             changes = true;
         }
+
+        if (updateRequest.email() != null && !updateRequest.email().equals(customer.getEmail()))
+          if(customerDb.existsPersonWithEmail(updateRequest.email())) {
+            throw new DuplicateResourceException(
+                    "email already taken"
+            );
+        }
+        customer.setEmail(updateRequest.email());
+        changes = true;
+
+        if (!changes) {
+            throw new RequestValidationException("no data changes found");
+        }
+        customerDb.updateCustomer(customer);
     }
 
  }
