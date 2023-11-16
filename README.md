@@ -1,2 +1,2 @@
 # javaProject
-A simple full stack java project
+A full stack java project
