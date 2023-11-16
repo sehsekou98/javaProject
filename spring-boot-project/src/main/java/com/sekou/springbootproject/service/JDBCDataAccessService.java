@@ -22,7 +22,7 @@ public class JDBCDataAccessService implements CustomerDb {
     }
 
     @Override
-    public List selectAllCustomers() {
+    public List<Customer> selectAllCustomers() {
         var sql = """
                 SELECT id, name, email, age
                 FROM customer
