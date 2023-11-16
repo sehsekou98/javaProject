@@ -85,8 +85,7 @@ public class CustomerService {
 
         if (!changes) {
             throw new RequestValidationException("no data changes found");
-        }
-        customerDb.updateCustomer(customer);
+        }customerDb.updateCustomer(customer);
     }
 
  }

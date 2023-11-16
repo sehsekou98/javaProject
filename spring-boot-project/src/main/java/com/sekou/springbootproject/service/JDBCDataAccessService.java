@@ -22,7 +22,7 @@ public class JDBCDataAccessService implements CustomerDb {
     }
 
     @Override
-    public List<Customer> selectAllCustomers() {
+    public List selectAllCustomers() {
         var sql = """
                 SELECT id, name, email, age
                 FROM customer
@@ -33,7 +33,7 @@ public class JDBCDataAccessService implements CustomerDb {
     }
 
     @Override
-    public Optional<Customer> selectCustomerById(Integer id) {
+    public Optional selectCustomerById(Integer id) {
         var sql = """
                 SELECT id, name, email, age
                 FROM customer
@@ -42,6 +42,7 @@ public class JDBCDataAccessService implements CustomerDb {
         return jdbcTemplate.query(sql, customerRowMapper, id)
                 .stream()
                 .findFirst();
+
     }
 
     @Override
