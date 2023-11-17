@@ -47,6 +47,19 @@ class CustomerRepositoryTest  extends AbstractUniteTestContainer {
         assertThat(actual).isTrue();
     }
 
+    @Test
+    void existsCustomerByEmailWhenEmailNotPresent() {
+        String email = FAKER.internet().safeEmailAddress() + "-" + UUID.randomUUID();
+
+
+        //When
+        var actual = underTest.existsCustomerByEmail(email);
+
+        // Then
+
+        assertThat(actual).isFalse();
+    }
+
 
 
     @Test
@@ -72,5 +85,15 @@ class CustomerRepositoryTest  extends AbstractUniteTestContainer {
         var actual = underTest.existsCustomerById(id);
 
          assertThat(actual).isTrue();
+    }
+    @Test
+    void existsCustomerByIdWhenIdNotPresent() {
+        //Given
+        int id = -1;
+
+        // When
+        var actual = underTest.existsCustomerById(id);
+
+        assertThat(actual).isFalse();
     }
 }
