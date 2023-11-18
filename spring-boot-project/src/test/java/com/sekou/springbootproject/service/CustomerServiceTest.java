@@ -3,16 +3,15 @@ package com.sekou.springbootproject.service;
 import com.sekou.springbootproject.customers.Customer;
 import com.sekou.springbootproject.customers.CustomerDb;
 import com.sekou.springbootproject.customers.CustomerRegistrationRequest;
+import com.sekou.springbootproject.customers.CustomerUpdateRequest;
 import com.sekou.springbootproject.exception.DuplicateResourceException;
+import com.sekou.springbootproject.exception.RequestValidationException;
 import com.sekou.springbootproject.exception.ResourceNotFound;
-import com.sekou.springbootproject.repository.CustomerRepository;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
@@ -128,6 +127,151 @@ class CustomerServiceTest {
     }
 
     @Test
-    void updateCustomer() {
+    void updateAllCustomerProperties() {
+        int id = 10;
+        Customer customer = new Customer(
+                id, "Sekou", "seh@gmail.com", 18
+        );
+        when(customerDb.selectCustomerById(id)).thenReturn(Optional.of(customer));
+
+        String newEmail = "kalasco@gmail.com";
+
+        CustomerUpdateRequest updateRequest  = new CustomerUpdateRequest(
+                 "Kalasco", newEmail, 24);
+
+        when(customerDb.existsPersonWithEmail(newEmail)).thenReturn(false);
+
+         underTest.updateCustomer(id, updateRequest);
+
+         ArgumentCaptor<Customer> customerArgumentCaptor = ArgumentCaptor.forClass(Customer.class);
+         verify(customerDb).updateCustomer(customerArgumentCaptor.capture());
+         Customer capturedCustomer = customerArgumentCaptor.getValue();
+
+         assertThat(capturedCustomer.getName()).isEqualTo(updateRequest.name());
+        assertThat(capturedCustomer.getEmail()).isEqualTo(updateRequest.email());
+        assertThat(capturedCustomer.getAge()).isEqualTo(updateRequest.age());
+
+    }
+
+    @Test
+    void updateAllOnlyCustomerName() {
+        int id = 10;
+        Customer customer = new Customer(
+                id, "Sekou", "seh@gmail.com", 18
+        );
+        when(customerDb.selectCustomerById(id)).thenReturn(Optional.of(customer));
+
+
+        CustomerUpdateRequest updateRequest  = new CustomerUpdateRequest(
+                "Kalasco", null, null);
+
+
+        underTest.updateCustomer(id, updateRequest);
+
+        ArgumentCaptor<Customer> customerArgumentCaptor = ArgumentCaptor.forClass(Customer.class);
+        verify(customerDb).updateCustomer(customerArgumentCaptor.capture());
+        Customer capturedCustomer = customerArgumentCaptor.getValue();
+
+        assertThat(capturedCustomer.getName()).isEqualTo(updateRequest.name());
+        assertThat(capturedCustomer.getEmail()).isEqualTo(customer.getEmail());
+        assertThat(capturedCustomer.getAge()).isEqualTo(customer.getAge());
+
+    }
+
+    @Test
+    void updateAllOnlyCustomerEmail() {
+        int id = 10;
+        Customer customer = new Customer(
+                id, "Sekou", "seh@gmail.com", 18
+        );
+        when(customerDb.selectCustomerById(id)).thenReturn(Optional.of(customer));
+        String newEmail = "kalasco@gmail.com";
+
+
+        CustomerUpdateRequest updateRequest  = new CustomerUpdateRequest(
+                null, newEmail, null);
+
+
+        underTest.updateCustomer(id, updateRequest);
+
+        ArgumentCaptor<Customer> customerArgumentCaptor = ArgumentCaptor.forClass(Customer.class);
+        verify(customerDb).updateCustomer(customerArgumentCaptor.capture());
+        Customer capturedCustomer = customerArgumentCaptor.getValue();
+
+        assertThat(capturedCustomer.getName()).isEqualTo(customer.getName());
+        assertThat(capturedCustomer.getEmail()).isEqualTo(newEmail);
+        assertThat(capturedCustomer.getAge()).isEqualTo(customer.getAge());
+
+    }
+
+    @Test
+    void updateAllOnlyCustomerAge() {
+        int id = 10;
+        Customer customer = new Customer(
+                id, "Sekou", "seh@gmail.com", 18
+        );
+        when(customerDb.selectCustomerById(id)).thenReturn(Optional.of(customer));
+
+
+        CustomerUpdateRequest updateRequest  = new CustomerUpdateRequest(
+                null, null, 24);
+
+
+        underTest.updateCustomer(id, updateRequest);
+
+        ArgumentCaptor<Customer> customerArgumentCaptor = ArgumentCaptor.forClass(Customer.class);
+        verify(customerDb).updateCustomer(customerArgumentCaptor.capture());
+        Customer capturedCustomer = customerArgumentCaptor.getValue();
+
+        assertThat(capturedCustomer.getName()).isEqualTo(customer.getName());
+        assertThat(capturedCustomer.getEmail()).isEqualTo(customer.getEmail());
+        assertThat(capturedCustomer.getAge()).isEqualTo(updateRequest.age());
+
+    }
+
+    @Test
+    void willThrowWhenCustomerEmailExist() {
+        int id = 10;
+        Customer customer = new Customer(
+                id, "Sekou", "seh@gmail.com", 18
+        );
+        when(customerDb.selectCustomerById(id)).thenReturn(Optional.of(customer));
+        String newEmail = "kalasco@gmail.com";
+
+
+        CustomerUpdateRequest updateRequest  = new CustomerUpdateRequest(
+                null, newEmail, null);
+
+        when(customerDb.existsPersonWithEmail(newEmail)).thenReturn(true);
+
+
+        assertThatThrownBy(() -> underTest.updateCustomer(id, updateRequest))
+                .isInstanceOf(DuplicateResourceException.class)
+                .hasMessage("email already taken");
+
+        verify(customerDb, never()).updateCustomer(any());
+
+    }
+
+    @Test
+    void willThrowWhenCustomerUpdateHasNoChanges() {
+        int id = 10;
+        Customer customer = new Customer(
+                id, "Sekou", "seh@gmail.com", 18
+        );
+        when(customerDb.selectCustomerById(id)).thenReturn(Optional.of(customer));
+
+
+
+        CustomerUpdateRequest updateRequest  = new CustomerUpdateRequest(
+                customer.getName(), customer.getEmail(), customer.getAge());
+
+
+        assertThatThrownBy(() -> underTest.updateCustomer(id, updateRequest))
+                .isInstanceOf(RequestValidationException.class)
+                .hasMessage("no data changes found");
+
+        verify(customerDb, never()).updateCustomer(any());
+
     }
 }

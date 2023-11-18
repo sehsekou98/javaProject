@@ -65,8 +65,8 @@ public class CustomerService {
         boolean changes = false;
 
         if (updateRequest.name() != null && !updateRequest.name().equals(customer.getName())) {
-          customer.setName(updateRequest.name());
-          changes = true;
+            customer.setName(updateRequest.name());
+            changes = true;
         }
 
         if (updateRequest.age() != null && !updateRequest.age().equals(customer.getAge())) {
@@ -74,19 +74,21 @@ public class CustomerService {
             changes = true;
         }
 
-        if (updateRequest.email() != null && !updateRequest.email().equals(customer.getEmail()))
-          if(customerDb.existsPersonWithEmail(updateRequest.email())) {
-            throw new DuplicateResourceException(
-                    "email already taken"
-            );
+        if (updateRequest.email() != null && !updateRequest.email().equals(customer.getEmail())) {
+            if (customerDb.existsPersonWithEmail(updateRequest.email())) {
+                throw new DuplicateResourceException("email already taken");
+            }
+            customer.setEmail(updateRequest.email());
+            changes = true;
         }
-        customer.setEmail(updateRequest.email());
-        changes = true;
 
         if (!changes) {
             throw new RequestValidationException("no data changes found");
-        }customerDb.updateCustomer(customer);
+        }
+
+        customerDb.updateCustomer(customer);
     }
 
- }
+
+}
 
