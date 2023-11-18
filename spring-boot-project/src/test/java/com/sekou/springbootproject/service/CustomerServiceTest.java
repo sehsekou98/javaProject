@@ -3,6 +3,7 @@ package com.sekou.springbootproject.service;
 import com.sekou.springbootproject.customers.Customer;
 import com.sekou.springbootproject.customers.CustomerDb;
 import com.sekou.springbootproject.customers.CustomerRegistrationRequest;
+import com.sekou.springbootproject.exception.DuplicateResourceException;
 import com.sekou.springbootproject.exception.ResourceNotFound;
 import com.sekou.springbootproject.repository.CustomerRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -18,8 +19,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -88,9 +88,43 @@ class CustomerServiceTest {
         assertThat(capturedCustomer.getAge()).isEqualTo(request.age());
 
     }
+    @Test
+    void willThrowWhenEmailExistAddingCustomer() {
+        String email = "seh@gmail.com";
+        when(customerDb.existsPersonWithEmail(email)).thenReturn(true);
+
+        CustomerRegistrationRequest request = new CustomerRegistrationRequest(
+                "Sekou", email, 18
+        );
+       assertThatThrownBy(() -> underTest.addCustomer(request))
+               .isInstanceOf(DuplicateResourceException.class)
+               .hasMessage("email already taken");
+
+
+        verify(customerDb, never()).insertCustomer(any());
+
+
+    }
 
     @Test
     void deleteCustomerById() {
+        int id = 10;
+        when(customerDb.existsPersonWithId(id)).thenReturn(true);
+
+        underTest.deleteCustomerById(id);
+
+        verify(customerDb).deleteCustomerById(id);
+    }
+    @Test
+    void willThrowWhenDeletedIdNotExistCustomerById() {
+        int id = 10;
+        when(customerDb.existsPersonWithId(id)).thenReturn(false);
+
+       assertThatThrownBy(() -> underTest.deleteCustomerById(id))
+               .isInstanceOf(ResourceNotFound.class)
+               .hasMessage("customer with id [%s] not found".formatted(id));
+
+        verify(customerDb, never()).deleteCustomerById(id);
     }
 
     @Test
