@@ -90,4 +90,63 @@ public class CustomerIntegrationTest {
                  .isEqualTo(expectedCustomer);
 
     }
+
+    @Test
+    void canDeleteCustomer() {
+        Faker faker = new Faker();
+        Name fakerName = faker.name();
+        String name = fakerName.fullName();
+        String email = fakerName.firstName() + "-" + UUID.randomUUID() + "@gmail.com";
+        int age = RANDOM.nextInt(1, 100);
+        CustomerRegistrationRequest request = new CustomerRegistrationRequest(
+                name, email, age
+        );
+
+        // send a post request
+        webTestClient.post()
+                .uri(Customer_URI)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Mono.just(request),CustomerRegistrationRequest.class)
+                .exchange()
+                .expectStatus()
+                .isOk();
+
+        // get all customer
+        List<Customer> allCustomer = webTestClient.get()
+                .uri(Customer_URI)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus()
+                .isOk()
+                .expectBodyList(new ParameterizedTypeReference<Customer>() {
+                })
+                .returnResult()
+                .getResponseBody();
+
+      // get customer by id
+        var id = allCustomer.stream()
+                .filter(customer -> customer.getEmail().equals(email))
+                .map(Customer::getId)
+                .findFirst().orElseThrow();
+
+            // delete customer
+
+        webTestClient.delete()
+                        .uri(Customer_URI + "/{id}", id)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .exchange()
+                        .expectStatus()
+                        .isOk();
+
+           //Get customer by id
+
+        webTestClient.get()
+                .uri(Customer_URI + "/{id}", id)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus()
+                .isNotFound();
+
+    }
 }
