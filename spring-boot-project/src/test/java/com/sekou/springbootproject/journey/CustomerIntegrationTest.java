@@ -62,6 +62,7 @@ public class CustomerIntegrationTest {
                .returnResult()
                .getResponseBody();
 
+// make sure that all customers are present
        Customer expectedCustomer = new Customer(
                name, email, age
        );
@@ -69,6 +70,24 @@ public class CustomerIntegrationTest {
        assertThat(allCustomer)
                .usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
                .contains(expectedCustomer);
+
+// get customer by id
+
+        var id = allCustomer.stream()
+                .filter(customer -> customer.getEmail().equals(email))
+                .map(Customer::getId)
+                .findFirst().orElseThrow();
+        expectedCustomer.setId(id);
+
+         webTestClient.get()
+                .uri(Customer_URI + "/{id}", id)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus()
+                .isOk()
+                 .expectBody(new ParameterizedTypeReference<Customer>() {
+                })
+                 .isEqualTo(expectedCustomer);
 
     }
 }
