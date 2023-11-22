@@ -18,9 +18,7 @@ public class CustomerController {
     }
 
     @GetMapping
-    public List<Customer> getCustomers()
-    {
-        return customerService.getAllCustomers();
+    public List<Customer> getCustomers() { return customerService.getAllCustomers();
     }
 
 
@@ -44,7 +42,7 @@ public class CustomerController {
     }
 
     @PutMapping("{customerId}")
-    public void deleteCustomer(
+    public void updateCustomer(
             @PathVariable("customerId") Integer customerId,
             @RequestBody  CustomerUpdateRequest updateRequest) {
         customerService.updateCustomer(customerId, updateRequest);

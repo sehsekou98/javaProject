@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 @Component
-public class CustomerRowMapper implements RowMapper  {
+public class CustomerRowMapper implements RowMapper{
     @Override
     public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
         Customer customer = new Customer(
