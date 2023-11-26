@@ -74,6 +74,7 @@ public class CustomerIntegrationTest {
 
 // get customer by id
 
+        assert allCustomer != null;
         var id = allCustomer.stream()
                 .filter(customer -> customer.getEmail().equals(email))
                 .map(Customer::getId)
